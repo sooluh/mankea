@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mankea/db/helper/user_helper.dart';
 import 'package:mankea/helper.dart';
+import 'package:mankea/page/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -92,13 +94,23 @@ class LoginState extends State<Login> {
     bool verified = encoded == user.password;
 
     if (!verified) {
-      // security: pesan sama = biar ngga di bruteforce
+      // security: pesan disamakan = biar ngga di bruteforce
       showError('Nama pengguna atau kata sandi tidak tepat');
       return;
     }
 
     Navigator.of(context, rootNavigator: true).pop();
-    // TODO: pindah ke home
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    await preferences.setInt('id', user.id!);
+    await preferences.setString('username', user.username);
+    await preferences.setString('name', user.name);
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const Home()),
+      (Route<dynamic> route) => false,
+    );
   }
 
   @override

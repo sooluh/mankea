@@ -18,7 +18,7 @@ class Splash extends StatefulWidget {
 }
 
 class SplashState extends State<Splash> {
-  String? id;
+  int? id;
 
   @override
   void initState() {
@@ -34,7 +34,7 @@ class SplashState extends State<Splash> {
     Duration duration = const Duration(seconds: 4);
 
     setState(() {
-      id = preferences.getString('id');
+      id = preferences.getInt('id');
     });
 
     return Timer(duration, () {

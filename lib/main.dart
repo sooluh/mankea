@@ -3,9 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mankea/db/helper/user_helper.dart';
 import 'package:mankea/db/model/user.dart';
-import 'package:mankea/db/provider/user_provider.dart';
 import 'package:mankea/splash.dart';
-import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

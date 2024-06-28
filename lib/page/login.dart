@@ -1,12 +1,12 @@
 import 'dart:convert';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mankea/db/helper/user_helper.dart';
-import 'package:mankea/helper.dart';
+import 'package:mankea/db/service/user_service.dart';
+import 'package:mankea/utils/helper.dart';
 import 'package:mankea/page/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toast/toast.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +24,12 @@ class LoginState extends State<Login> {
   String username = '', password = '';
   bool secureText = true;
   GlobalKey<FormState> key = GlobalKey<FormState>();
+
+  static const List<Map<String, String>> staticData = [
+    {'label': 'Nama', 'value': 'Suluh Sulistiawan'},
+    {'label': 'NIM', 'value': '211351143'},
+    {'label': 'Kelas', 'value': 'Informatika Malam B'},
+  ];
 
   void showHide() {
     setState(() {
@@ -48,7 +54,7 @@ class LoginState extends State<Login> {
         children: <Widget>[
           CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(
-              Color(Config.primaryColor),
+              Color(AppColor.primaryColor),
             ),
           ),
           Padding(
@@ -71,7 +77,7 @@ class LoginState extends State<Login> {
 
   void showError(String message) {
     Navigator.of(context, rootNavigator: true).pop();
-    showAlert(context, 'Kesalahan', message, DialogType.error);
+    Toast.show(message, duration: Toast.lengthLong, gravity: Toast.bottom);
   }
 
   void loginCheck() async {
@@ -82,8 +88,8 @@ class LoginState extends State<Login> {
       return;
     }
 
-    var helper = UserHelper();
-    var user = await helper.findBy('username', username);
+    var userService = UserService();
+    var user = await userService.findBy('username', username);
 
     if (user == null) {
       showError('Nama pengguna atau kata sandi tidak tepat');
@@ -99,18 +105,21 @@ class LoginState extends State<Login> {
       return;
     }
 
-    Navigator.of(context, rootNavigator: true).pop();
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
     await preferences.setInt('id', user.id!);
     await preferences.setString('username', user.username);
     await preferences.setString('name', user.name);
 
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const Home()),
-      (Route<dynamic> route) => false,
-    );
+    if (mounted) {
+      Navigator.of(context, rootNavigator: true).pop();
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const Home()),
+        (Route<dynamic> route) => false,
+      );
+    }
   }
 
   @override
@@ -120,6 +129,8 @@ class LoginState extends State<Login> {
       statusBarIconBrightness: Brightness.dark,
       statusBarBrightness: Brightness.light,
     ));
+
+    ToastContext().init(context);
 
     return MaterialApp(
       title: 'Masuk',
@@ -142,8 +153,8 @@ class LoginState extends State<Login> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: Image.asset(
-                      'assets/images/login.png',
-                      width: 200,
+                      'assets/images/mankea.png',
+                      width: 150,
                     ),
                   ),
                   Text(
@@ -151,12 +162,12 @@ class LoginState extends State<Login> {
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
-                      color: Color(Config.primaryColor),
+                      color: Color(AppColor.primaryColor),
                     ),
                   ),
                   Text(
                     'Platform-Based Programming Final Exam',
-                    style: TextStyle(color: Color(Config.primaryColor)),
+                    style: TextStyle(color: Color(AppColor.primaryColor)),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
@@ -242,7 +253,7 @@ class LoginState extends State<Login> {
                               ),
                               suffixIcon: IconButton(
                                 onPressed: showHide,
-                                color: Color(Config.primaryColor),
+                                color: Color(AppColor.primaryColor),
                                 icon: Icon(secureText
                                     ? Icons.visibility_off
                                     : Icons.visibility),
@@ -269,7 +280,7 @@ class LoginState extends State<Login> {
                         style: ElevatedButton.styleFrom(
                           elevation: 0.0,
                           shadowColor: Colors.transparent,
-                          backgroundColor: Color(Config.primaryColor),
+                          backgroundColor: Color(AppColor.primaryColor),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:mankea/db/helper/user_helper.dart';
+import 'package:mankea/db/service/user_service.dart';
 import 'package:mankea/db/model/user.dart';
 import 'package:mankea/splash.dart';
 
@@ -32,8 +32,8 @@ class MainState extends State<Main> {
   }
 
   Future<void> userDefault() async {
-    var helper = UserHelper();
-    var user = await helper.find(1);
+    var userService = UserService();
+    var user = await userService.find(1);
 
     if (user == null) {
       var object = User.fromMap({
@@ -43,7 +43,7 @@ class MainState extends State<Main> {
         'name': 'Suluh Sulistiawan',
       });
 
-      await helper.insert(object);
+      await userService.insert(object);
     }
   }
 

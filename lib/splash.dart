@@ -55,6 +55,7 @@ class SplashState extends State<Splash> {
     ));
 
     return MaterialApp(
+      title: 'Masuk',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.white,
@@ -70,8 +71,8 @@ class SplashState extends State<Splash> {
               children: <Widget>[
                 Image.asset(
                   'assets/images/mankea.png',
-                  width: 250,
-                  height: 250,
+                  width: 200,
+                  height: 200,
                 ),
               ],
             ),

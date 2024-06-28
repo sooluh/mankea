@@ -1,8 +1,7 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Config {
+class AppColor {
   static var primaryColor = 0xFF55BCAB;
   static var shimmerColor = 0xFFE8E8E8;
   static var labelColor = 0xFF808080;
@@ -36,25 +35,4 @@ Future<void> openBrowser(Uri url) async {
   if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
     throw 'Could not launch $url';
   }
-}
-
-void showAlert(
-  BuildContext context,
-  String title,
-  String message,
-  DialogType type,
-) {
-  AwesomeDialog dialog = AwesomeDialog(
-    context: context,
-    animType: AnimType.scale,
-    dialogType: type,
-    title: title,
-    titleTextStyle: TextStyle(fontSize: FontSize.h1, fontFamily: 'Poppins'),
-    desc: message,
-    descTextStyle: TextStyle(fontSize: FontSize.h3, fontFamily: 'Poppins'),
-    btnOkOnPress: () {},
-    btnOkColor: Color(Config.primaryColor),
-  );
-
-  dialog.show();
 }

@@ -2,16 +2,16 @@ import 'package:mankea/db/model/user.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class UserHelper {
-  static UserHelper? helper;
+class UserService {
+  static UserService? service;
   static late Database instance;
   static const String tableName = 'users';
 
-  UserHelper.internal() {
-    helper = this;
+  UserService.internal() {
+    service = this;
   }
 
-  factory UserHelper() => helper ?? UserHelper.internal();
+  factory UserService() => service ?? UserService.internal();
 
   Future<Database> get database async {
     instance = await initialize();
@@ -103,6 +103,8 @@ class UserHelper {
 
     try {
       await db.delete(tableName, where: 'id = ?', whereArgs: [id]);
+
+      return true;
     } catch (e) {
       //
     }

@@ -8,11 +8,6 @@ import 'package:mankea/utils/helper.dart';
 import 'package:mankea/page/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const Login());
-}
-
 class Login extends StatefulWidget {
   const Login({super.key});
 

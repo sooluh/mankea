@@ -7,11 +7,6 @@ import 'package:mankea/utils/helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const Identity());
-}
-
 class Identity extends StatefulWidget {
   const Identity({super.key});
 

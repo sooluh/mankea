@@ -8,11 +8,6 @@ import 'package:mankea/utils/config.dart';
 import 'package:mankea/utils/helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const Profile());
-}
-
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -174,8 +169,8 @@ class ProfileState extends State<Profile> {
                             onTap: () {
                               Navigator.of(context, rootNavigator: true).push(
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        menus[index]['target']),
+                                  builder: (context) => menus[index]['target'],
+                                ),
                               );
                             },
                             leading: Container(

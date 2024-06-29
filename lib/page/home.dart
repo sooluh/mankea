@@ -3,15 +3,11 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mankea/db/model/book.dart';
+import 'package:mankea/page/detail.dart';
 import 'package:mankea/page/profile.dart';
 import 'package:mankea/utils/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
-
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const Home());
-}
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -178,7 +174,7 @@ class HomeState extends State<Home> {
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 1,
+                                      vertical: 2.5,
                                       horizontal: 10,
                                     ),
                                     child: Shimmer.fromColors(
@@ -199,7 +195,7 @@ class HomeState extends State<Home> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 1,
+                                      vertical: 2.5,
                                       horizontal: 10,
                                     ),
                                     child: Shimmer.fromColors(
@@ -222,7 +218,7 @@ class HomeState extends State<Home> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 1,
+                                      vertical: 2.5,
                                       horizontal: 10,
                                     ),
                                     child: Shimmer.fromColors(
@@ -366,7 +362,11 @@ class HomeState extends State<Home> {
                         hoverColor: Colors.transparent,
                         splashColor: Colors.transparent,
                         onTap: () {
-                          // TODO: detail page
+                          Navigator.of(context, rootNavigator: true).push(
+                            MaterialPageRoute(
+                              builder: (context) => Detail(book: books![index]),
+                            ),
+                          );
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -392,7 +392,7 @@ class HomeState extends State<Home> {
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 1,
+                                      vertical: 2.5,
                                       horizontal: 10,
                                     ),
                                     child: Text(
@@ -404,7 +404,7 @@ class HomeState extends State<Home> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 1,
+                                      vertical: 2.5,
                                       horizontal: 10,
                                     ),
                                     child: Text(
@@ -417,7 +417,7 @@ class HomeState extends State<Home> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 1,
+                                      vertical: 2.5,
                                       horizontal: 10,
                                     ),
                                     child: Row(
@@ -433,7 +433,9 @@ class HomeState extends State<Home> {
                                         ),
                                         const SizedBox(width: 5),
                                         Text(
-                                          books![index].rate ?? 'n/a',
+                                          books![index].rate != null
+                                              ? '${books![index].rate}/5'
+                                              : 'n/a',
                                           style: TextStyle(
                                             color: Colors.grey,
                                             fontSize: FontSize.h5,

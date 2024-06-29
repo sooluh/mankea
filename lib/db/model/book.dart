@@ -9,7 +9,7 @@ class Book {
   late String? rate;
   late bool isPdf;
   late String? description;
-  late List<String>? url;
+  late List<dynamic>? url;
 
   Book({
     required this.id,

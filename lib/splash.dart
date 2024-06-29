@@ -5,11 +5,6 @@ import 'package:mankea/page/login.dart';
 import 'package:mankea/page/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const Splash());
-}
-
 class Splash extends StatefulWidget {
   const Splash({super.key});
 

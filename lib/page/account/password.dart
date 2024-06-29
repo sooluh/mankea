@@ -9,11 +9,6 @@ import 'package:mankea/utils/helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const Password());
-}
-
 class Password extends StatefulWidget {
   const Password({super.key});
 

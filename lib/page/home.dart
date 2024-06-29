@@ -88,7 +88,6 @@ class HomeState extends State<Home> {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
           centerTitle: true,
           titleSpacing: 0,
@@ -139,7 +138,10 @@ class HomeState extends State<Home> {
                   itemCount: 5,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
-                      padding: const EdgeInsets.all(7.5),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 7.5,
+                      ),
                       child: Card(
                         color: Colors.white,
                         margin: EdgeInsets.zero,
@@ -158,8 +160,11 @@ class HomeState extends State<Home> {
                                 height: 90,
                                 decoration: ShapeDecoration(
                                   color: Colors.grey[400],
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(2.5),
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(7.5),
+                                      bottomLeft: Radius.circular(7.5),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -179,29 +184,6 @@ class HomeState extends State<Home> {
                                       highlightColor: Colors.white,
                                       child: Container(
                                         width: double.infinity,
-                                        height: 20,
-                                        decoration: ShapeDecoration(
-                                          color: Colors.grey[400],
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 1,
-                                      horizontal: 10,
-                                    ),
-                                    child: Shimmer.fromColors(
-                                      baseColor: Color(AppColor.shimmerColor),
-                                      highlightColor: Colors.white,
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.5,
                                         height: 20,
                                         decoration: ShapeDecoration(
                                           color: Colors.grey[400],
@@ -365,7 +347,10 @@ class HomeState extends State<Home> {
                 itemCount: books!.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Padding(
-                    padding: const EdgeInsets.all(7.5),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 7.5,
+                    ),
                     child: Card(
                       color: Colors.white,
                       margin: EdgeInsets.zero,
@@ -385,7 +370,10 @@ class HomeState extends State<Home> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(2.5),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(7.5),
+                                bottomLeft: Radius.circular(7.5),
+                              ),
                               child: FadeInImage(
                                 width: 60,
                                 height: 90,
@@ -407,7 +395,7 @@ class HomeState extends State<Home> {
                                     ),
                                     child: Text(
                                       books![index].title,
-                                      maxLines: 2,
+                                      maxLines: 1,
                                       style: TextStyle(fontSize: FontSize.h3),
                                       overflow: TextOverflow.ellipsis,
                                     ),

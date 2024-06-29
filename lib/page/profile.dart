@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mankea/db/model/book.dart';
+import 'package:mankea/page/account/password.dart';
 import 'package:mankea/page/login.dart';
 import 'package:mankea/utils/config.dart';
 import 'package:mankea/utils/helper.dart';
@@ -28,12 +29,14 @@ class ProfileState extends State<Profile> {
       'subtitle': 'Perbarui detail profil',
       'icon': Icons.person,
       'color': Colors.blueAccent,
+      'target': Password(),
     },
     {
       'title': 'Ubah Kata Sandi',
       'subtitle': 'Perbarui kata sandi akun',
       'icon': Icons.lock,
       'color': Colors.redAccent,
+      'target': Password(),
     },
   ];
 
@@ -167,6 +170,13 @@ class ProfileState extends State<Profile> {
                         },
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
+                            onTap: () {
+                              Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        menus[index]['target']),
+                              );
+                            },
                             leading: Container(
                               decoration: BoxDecoration(
                                 color: menus[index]['color'],

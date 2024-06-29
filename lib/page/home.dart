@@ -433,7 +433,7 @@ class HomeState extends State<Home> {
                                         ),
                                         const SizedBox(width: 5),
                                         Text(
-                                          '4.5',
+                                          books![index].rate ?? 'n/a',
                                           style: TextStyle(
                                             color: Colors.grey,
                                             fontSize: FontSize.h5,

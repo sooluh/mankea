@@ -11,11 +11,11 @@ import 'package:toast/toast.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(Password());
+  runApp(const Password());
 }
 
 class Password extends StatefulWidget {
-  Password({super.key});
+  const Password({super.key});
 
   @override
   PasswordState createState() => PasswordState();

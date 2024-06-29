@@ -9,11 +9,11 @@ import 'package:toast/toast.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(Identity());
+  runApp(const Identity());
 }
 
 class Identity extends StatefulWidget {
-  Identity({super.key});
+  const Identity({super.key});
 
   @override
   IdentityState createState() => IdentityState();

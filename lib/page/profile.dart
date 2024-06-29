@@ -30,14 +30,14 @@ class ProfileState extends State<Profile> {
       'subtitle': 'Perbarui detail profil',
       'icon': Icons.person,
       'color': Colors.blueAccent,
-      'target': Identity(),
+      'target': const Identity(),
     },
     {
       'title': 'Ubah Kata Sandi',
       'subtitle': 'Perbarui kata sandi akun',
       'icon': Icons.lock,
       'color': Colors.redAccent,
-      'target': Password(),
+      'target': const Password(),
     },
   ];
 
@@ -114,7 +114,7 @@ class ProfileState extends State<Profile> {
                   color: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: ListTile(
                     leading: const CircleAvatar(
@@ -155,7 +155,7 @@ class ProfileState extends State<Profile> {
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: ListView.separated(
                         itemCount: menus.length,

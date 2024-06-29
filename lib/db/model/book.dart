@@ -6,6 +6,7 @@ class Book {
   late String? publisher;
   late int publication;
   late String author;
+  late String? rate;
   late bool isPdf;
   late String? description;
   late List<String>? url;
@@ -18,6 +19,7 @@ class Book {
     this.publisher,
     required this.publication,
     required this.author,
+    this.rate,
     required this.isPdf,
     this.description,
     this.url,
@@ -32,6 +34,7 @@ class Book {
       'publisher': publisher,
       'publication': publication,
       'author': author,
+      'rate': rate,
       'is_pdf': isPdf,
       'description': description,
       'url': url,
@@ -49,6 +52,7 @@ class Book {
     publisher = map['publisher'];
     publication = map['publication'];
     author = map['author'];
+    rate = map['rate'];
     isPdf = map['is_pdf'];
     description = map['description'];
     url = map['url'];
@@ -63,6 +67,7 @@ class Book {
       publisher: json['publisher'],
       publication: json['publication'],
       author: json['author'],
+      rate: json['rate'],
       isPdf: json['is_pdf'],
       description: json['description'],
       url: json['url'],

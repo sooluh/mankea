@@ -3,10 +3,9 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mankea/db/service/user_service.dart';
-import 'package:mankea/utils/helper.dart';
+import 'package:mankea/utils/config.dart';
 import 'package:mankea/page/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toast/toast.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,14 +20,15 @@ class Login extends StatefulWidget {
 }
 
 class LoginState extends State<Login> {
-  String username = '', password = '';
-  bool secureText = true;
+  String username = '', password = '', errorMessage = '';
+  bool secureText = true, isError = false;
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
   static const List<Map<String, String>> staticData = [
     {'label': 'Nama', 'value': 'Suluh Sulistiawan'},
     {'label': 'NIM', 'value': '211351143'},
     {'label': 'Kelas', 'value': 'Informatika Malam B'},
+    {'label': 'Kredensial Default', 'value': 'suluh:suluh'},
   ];
 
   void showHide() {
@@ -42,7 +42,7 @@ class LoginState extends State<Login> {
 
     if (form!.validate()) {
       form.save();
-      loginCheck();
+      checkLogin();
     }
   }
 
@@ -77,23 +77,30 @@ class LoginState extends State<Login> {
 
   void showError(String message) {
     Navigator.of(context, rootNavigator: true).pop();
-    Toast.show(message, duration: Toast.lengthLong, gravity: Toast.bottom);
+
+    setState(() {
+      isError = true;
+      errorMessage = message;
+    });
   }
 
-  void loginCheck() async {
+  void checkLogin() async {
+    setState(() {
+      isError = false;
+      errorMessage = '';
+    });
+
     showLoading();
 
     if (username.isEmpty || password.isEmpty) {
-      showError('Nama pengguna dan kata sandi harus diisi');
-      return;
+      return showError('Nama pengguna dan kata sandi harus diisi');
     }
 
     var userService = UserService();
     var user = await userService.findBy('username', username);
 
     if (user == null) {
-      showError('Nama pengguna atau kata sandi tidak tepat');
-      return;
+      return showError('Nama pengguna atau kata sandi salah');
     }
 
     var encoded = md5.convert(utf8.encode(password)).toString();
@@ -101,8 +108,7 @@ class LoginState extends State<Login> {
 
     if (!verified) {
       // security: pesan disamakan = biar ngga di bruteforce
-      showError('Nama pengguna atau kata sandi tidak tepat');
-      return;
+      return showError('Nama pengguna atau kata sandi salah');
     }
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -122,6 +128,70 @@ class LoginState extends State<Login> {
     }
   }
 
+  Future showAuthor(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25),
+        ),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, bottom: 5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        ...staticData.asMap().keys.expand((i) => <Widget>[
+                              if (i != 0)
+                                Divider(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  height: 1,
+                                  thickness: 1,
+                                ),
+                              ListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                ),
+                                title: Text(
+                                  staticData[i]['label']!,
+                                  maxLines: 1,
+                                  style: TextStyle(fontSize: FontSize.h2),
+                                ),
+                                subtitle: Padding(
+                                  padding: const EdgeInsets.all(0),
+                                  child: Text(
+                                    staticData[i]['value']!,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontSize: FontSize.h4,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ]),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -129,8 +199,6 @@ class LoginState extends State<Login> {
       statusBarIconBrightness: Brightness.dark,
       statusBarBrightness: Brightness.light,
     ));
-
-    ToastContext().init(context);
 
     return MaterialApp(
       title: 'Masuk',
@@ -147,6 +215,24 @@ class LoginState extends State<Login> {
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
+              Align(
+                alignment: Alignment.topRight,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: InkWell(
+                      highlightColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      onTap: () {
+                        showAuthor(context);
+                      },
+                      child: const Icon(Icons.info),
+                    ),
+                  ),
+                ),
+              ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -158,7 +244,7 @@ class LoginState extends State<Login> {
                     ),
                   ),
                   Text(
-                    'Mankea',
+                    'Mank-Ea',
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
@@ -264,6 +350,21 @@ class LoginState extends State<Login> {
                       ),
                     ),
                   ),
+                  if (isError)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 10,
+                          left: 30,
+                          right: 30,
+                        ),
+                        child: Text(
+                          errorMessage,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ),
                   Padding(
                     padding: const EdgeInsets.only(
                       top: 20,

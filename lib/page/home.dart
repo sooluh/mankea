@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mankea/utils/helper.dart';
+import 'package:mankea/db/model/book.dart';
+import 'package:mankea/utils/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,12 +22,7 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> {
   String? name, username;
-
-  static const List<Map<String, String>> staticData = [
-    {'label': 'Nama', 'value': 'Suluh Sulistiawan'},
-    {'label': 'NIM', 'value': '211351143'},
-    {'label': 'Kelas', 'value': 'Informatika Malam B'},
-  ];
+  List<Book>? books;
 
   @override
   void initState() {
@@ -42,8 +42,33 @@ class HomeState extends State<Home> {
     });
   }
 
+  Future<List<Book>?> fetchBooks() async {
+    final response = await http.get(ApiConfig.baseUrl);
+
+    if (response.statusCode != 200) {
+      throw Exception('Gagal memuat data buku');
+    }
+
+    Map<String, dynamic> body = json.decode(response.body);
+
+    if (!body.containsKey('data')) {
+      throw Exception('Gagal memuat data buku');
+    }
+
+    List<dynamic> data = body['data'];
+    books = data.map((item) => Book.fromJson(item)).toList();
+
+    return books;
+  }
+
   Future<void> refresh() async {
-    // TODO: refresh data from api
+    GlobalKey<RefreshIndicatorState>().currentState?.show(atTop: false);
+    await Future.delayed(const Duration(seconds: 0));
+    final data = await fetchBooks();
+
+    setState(() {
+      books = data;
+    });
   }
 
   @override
@@ -59,128 +84,385 @@ class HomeState extends State<Home> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.white,
+        fontFamily: 'Poppins',
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Scaffold(
         backgroundColor: Colors.white,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(60),
-          child: AppBar(
-            centerTitle: false,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                InkWell(
-                  highlightColor: Colors.transparent,
-                  focusColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  onTap: () async {
-                    // TODO: open profile page
-                  },
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.only(right: 12),
-                        child: CircleAvatar(
-                          radius: 18,
-                          backgroundImage:
-                              AssetImage('assets/images/avatar.png'),
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            name ?? 'Memuat ...',
-                            style: TextStyle(
-                              fontSize: FontSize.h3,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                            username ?? 'memuat ...',
-                            style: TextStyle(
-                              fontSize: FontSize.h5,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ],
+        appBar: AppBar(
+          centerTitle: true,
+          titleSpacing: 0,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
+          backgroundColor: Color(AppColor.primaryColor),
+          elevation: 0,
+          title: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Text(
+              'Mank-Ea',
+              style: TextStyle(
+                fontSize: FontSize.h1,
+                color: Colors.white,
+              ),
             ),
-            systemOverlayStyle: SystemUiOverlayStyle.light,
-            backgroundColor: Color(AppColor.primaryColor),
-            elevation: 0,
           ),
+          actions: <Widget>[
+            InkWell(
+              highlightColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onTap: () async {
+                // TODO: profile page
+              },
+              child: const Padding(
+                padding: EdgeInsets.only(right: 15),
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundImage: AssetImage('assets/images/mankea.png'),
+                ),
+              ),
+            ),
+          ],
         ),
         body: RefreshIndicator(
           onRefresh: refresh,
           key: GlobalKey<RefreshIndicatorState>(),
-          child: ListView(
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 20,
-                      horizontal: 15,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
+          child: FutureBuilder(
+            future: fetchBooks(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7.5,
+                    vertical: 15,
+                  ),
+                  itemCount: 5,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(7.5),
+                      child: Card(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.2),
-                            spreadRadius: 0,
-                            blurRadius: 15,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          ...staticData.asMap().keys.expand((i) => <Widget>[
-                                if (i != 0)
-                                  Divider(
-                                    color: Colors.grey.withOpacity(0.2),
-                                    height: 1,
-                                    thickness: 1,
+                        margin: EdgeInsets.zero,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Shimmer.fromColors(
+                              baseColor: Color(AppColor.shimmerColor),
+                              highlightColor: Colors.white,
+                              child: Container(
+                                width: 60,
+                                height: 90,
+                                decoration: ShapeDecoration(
+                                  color: Colors.grey[400],
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(2.5),
                                   ),
-                                ListTile(
-                                  title: Text(
-                                    staticData[i]['label']!,
-                                    maxLines: 1,
-                                    style: TextStyle(fontSize: FontSize.h2),
-                                  ),
-                                  subtitle: Padding(
-                                    padding: const EdgeInsets.all(0),
-                                    child: Text(
-                                      staticData[i]['value']!,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                        fontSize: FontSize.h4,
-                                        color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 1,
+                                      horizontal: 10,
+                                    ),
+                                    child: Shimmer.fromColors(
+                                      baseColor: Color(AppColor.shimmerColor),
+                                      highlightColor: Colors.white,
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: 20,
+                                        decoration: ShapeDecoration(
+                                          color: Colors.grey[400],
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ]),
-                        ],
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 1,
+                                      horizontal: 10,
+                                    ),
+                                    child: Shimmer.fromColors(
+                                      baseColor: Color(AppColor.shimmerColor),
+                                      highlightColor: Colors.white,
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.5,
+                                        height: 20,
+                                        decoration: ShapeDecoration(
+                                          color: Colors.grey[400],
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 1,
+                                      horizontal: 10,
+                                    ),
+                                    child: Shimmer.fromColors(
+                                      baseColor: Color(AppColor.shimmerColor),
+                                      highlightColor: Colors.white,
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.25,
+                                        height: 15,
+                                        decoration: ShapeDecoration(
+                                          color: Colors.grey[400],
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 1,
+                                      horizontal: 10,
+                                    ),
+                                    child: Shimmer.fromColors(
+                                      baseColor: Color(AppColor.shimmerColor),
+                                      highlightColor: Colors.white,
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.1,
+                                        height: 15,
+                                        decoration: ShapeDecoration(
+                                          color: Colors.grey[400],
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }
+
+              if (snapshot.hasError) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Image.asset(
+                          'assets/images/no-internet.png',
+                          height: 180,
+                        ),
+                      ),
+                      Text(
+                        'Terjadi Kesalahan',
+                        style: TextStyle(
+                          fontSize: FontSize.h3,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Gagal memuat data buku',
+                        style: TextStyle(
+                          fontSize: FontSize.h3,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 15),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            refresh();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            shadowColor: Colors.transparent,
+                            backgroundColor: Color(AppColor.primaryColor),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          child: Text(
+                            'Coba Lagi',
+                            style: TextStyle(
+                              fontSize: FontSize.h3,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              if (books!.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Image.asset(
+                          'assets/images/no-data.png',
+                          height: 130,
+                        ),
+                      ),
+                      Text(
+                        'Tidak Ditemukan',
+                        style: TextStyle(
+                          fontSize: FontSize.h3.toDouble(),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Belum ada data buku',
+                        style: TextStyle(
+                          fontSize: FontSize.h3.toDouble(),
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              return ListView.builder(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 7.5,
+                  vertical: 15,
+                ),
+                itemCount: books!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(7.5),
+                    child: Card(
+                      color: Colors.white,
+                      margin: EdgeInsets.zero,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: InkWell(
+                        highlightColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        onTap: () {
+                          // TODO: detail page
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(2.5),
+                              child: FadeInImage(
+                                width: 60,
+                                height: 90,
+                                image: NetworkImage(books![index].cover),
+                                placeholder: const AssetImage(
+                                    'assets/images/placeholder.png'),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 1,
+                                      horizontal: 10,
+                                    ),
+                                    child: Text(
+                                      books![index].title,
+                                      maxLines: 2,
+                                      style: TextStyle(fontSize: FontSize.h3),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 1,
+                                      horizontal: 10,
+                                    ),
+                                    child: Text(
+                                      books![index].author,
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: FontSize.h5,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 1,
+                                      horizontal: 10,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        const Icon(
+                                          Icons.star,
+                                          color: Colors.grey,
+                                          size: 15,
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          '4.5',
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: FontSize.h5,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  );
+                },
+              );
+            },
           ),
         ),
       ),

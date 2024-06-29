@@ -5,7 +5,7 @@ class ApiConfig {
 }
 
 class AppColor {
-  static var primaryColor = 0xFF55BCAB;
+  static var primaryColor = 0xFFEF9C66;
   static var shimmerColor = 0xFFE8E8E8;
   static var labelColor = 0xFF808080;
   static var blackColor = 0xFF333333;

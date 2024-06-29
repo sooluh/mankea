@@ -1,9 +1,9 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mankea/db/model/book.dart';
+import 'package:mankea/page/profile.dart';
 import 'package:mankea/utils/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
@@ -111,7 +111,9 @@ class HomeState extends State<Home> {
               hoverColor: Colors.transparent,
               splashColor: Colors.transparent,
               onTap: () async {
-                // TODO: profile page
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const Profile()),
+                );
               },
               child: const Padding(
                 padding: EdgeInsets.only(right: 15),

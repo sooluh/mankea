@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mankea/db/service/user_service.dart';
 import 'package:mankea/utils/config.dart';
+import 'package:mankea/utils/helper.dart';
 import 'package:mankea/page/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -46,35 +47,6 @@ class LoginState extends State<Login> {
     }
   }
 
-  void showLoading() {
-    AlertDialog alert = AlertDialog(
-      contentPadding: const EdgeInsets.all(30),
-      content: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(
-              Color(AppColor.primaryColor),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: Text(
-              'Harap tunggu ...',
-              style: TextStyle(fontSize: FontSize.h3, fontFamily: 'Poppins'),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => alert,
-    );
-  }
-
   void showError(String message) {
     Navigator.of(context, rootNavigator: true).pop();
 
@@ -90,7 +62,7 @@ class LoginState extends State<Login> {
       errorMessage = '';
     });
 
-    showLoading();
+    showLoading(context);
 
     if (username.isEmpty || password.isEmpty) {
       return showError('Nama pengguna dan kata sandi harus diisi');
@@ -116,6 +88,7 @@ class LoginState extends State<Login> {
     await preferences.setInt('id', user.id!);
     await preferences.setString('username', user.username);
     await preferences.setString('name', user.name);
+    await preferences.setString('email', user.email);
 
     if (mounted) {
       Navigator.of(context, rootNavigator: true).pop();

@@ -41,6 +41,7 @@ class MainState extends State<Main> {
         'username': 'suluh',
         'password': 'suluh',
         'name': 'Suluh Sulistiawan',
+        'email': 'xor@sesulih.my.id',
       });
 
       await userService.insert(object);

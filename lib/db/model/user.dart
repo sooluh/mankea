@@ -6,12 +6,14 @@ class User {
   late String username;
   late String password;
   late String name;
+  late String email;
 
   User({
     this.id,
     required this.username,
     required this.password,
     required this.name,
+    required this.email,
   });
 
   Future<Map<String, dynamic>> toMap() async {
@@ -20,6 +22,7 @@ class User {
       'username': username,
       'password': md5.convert(utf8.encode(password)).toString(),
       'name': name,
+      'email': email,
     };
   }
 
@@ -28,5 +31,6 @@ class User {
     username = map['username'];
     password = map['password'];
     name = map['name'];
+    email = map['email'];
   }
 }

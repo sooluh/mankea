@@ -1,4 +1,4 @@
-package id.my.suluh.mankea.mankea
+package id.my.suluh.mankea
 
 import io.flutter.embedding.android.FlutterActivity
 

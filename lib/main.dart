@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -39,7 +41,7 @@ class MainState extends State<Main> {
       var object = User.fromMap({
         'id': 1,
         'username': 'suluh',
-        'password': 'suluh',
+        'password': md5.convert(utf8.encode('suluh')).toString(),
         'name': 'Suluh Sulistiawan',
         'email': 'xor@sesulih.my.id',
       });

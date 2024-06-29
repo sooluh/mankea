@@ -1,9 +1,7 @@
-import 'dart:convert';
-import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mankea/db/service/user_service.dart';
-import 'package:mankea/page/login.dart';
+import 'package:mankea/page/home.dart';
 import 'package:mankea/utils/config.dart';
 import 'package:mankea/utils/helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,31 +9,35 @@ import 'package:toast/toast.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(Password());
+  runApp(Identity());
 }
 
-class Password extends StatefulWidget {
-  Password({super.key});
+class Identity extends StatefulWidget {
+  Identity({super.key});
 
   @override
-  PasswordState createState() => PasswordState();
+  IdentityState createState() => IdentityState();
 }
 
-class PasswordState extends State<Password> {
-  Map<String, String> password = {'old': '', 'new': '', 're': ''};
-  Map<String, bool> secureText = {'old': true, 'new': true, 're': true};
+class IdentityState extends State<Identity> {
+  String name = '', email = '';
   GlobalKey<FormState> key = GlobalKey<FormState>();
 
-  Map<String, String> passwordLabel = {
-    'old': 'Kata Sandi Lama',
-    'new': 'Kata Sandi Baru',
-    're': 'Konfirmasi Kata Sandi Baru',
-  };
+  @override
+  void initState() {
+    super.initState();
 
-  showHide(String type) {
+    if (mounted) {
+      init();
+    }
+  }
+
+  init() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
     setState(() {
-      secureText[type] = !secureText[type]!;
-      secureText = secureText;
+      name = preferences.getString('name')!;
+      email = preferences.getString('email')!;
     });
   }
 
@@ -44,7 +46,7 @@ class PasswordState extends State<Password> {
 
     if (form!.validate()) {
       form.save();
-      updatePassword();
+      updateProfile();
     }
   }
 
@@ -53,17 +55,19 @@ class PasswordState extends State<Password> {
     Toast.show(message, duration: Toast.lengthLong, gravity: Toast.bottom);
   }
 
-  void updatePassword() async {
+  void updateProfile() async {
     showLoading(context);
 
-    if (password['old']!.isEmpty ||
-        password['new']!.isEmpty ||
-        password['re']!.isEmpty) {
-      return showError('Semua bidang kata sandi harus diisi');
+    final validMail = RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+    ).hasMatch(email);
+
+    if (name.isEmpty || email.isEmpty) {
+      return showError('Semua bidang profil harus diisi');
     }
 
-    if (password['new']! != password['re']!) {
-      return showError('Kata sandi baru tidak sama');
+    if (!validMail) {
+      return showError('Alamat surel tidak valid');
     }
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -75,28 +79,24 @@ class PasswordState extends State<Password> {
       return showError('Terjadi kesalahan, pengguna tidak dapat ditemukan');
     }
 
-    var encoded = md5.convert(utf8.encode(password['old']!)).toString();
-    bool verified = encoded == user.password;
+    user.name = name;
+    user.email = email;
 
-    if (!verified) {
-      return showError('Kata sandi lama salah');
-    }
-
-    user.password = md5.convert(utf8.encode(password['re']!)).toString();
     var updated = await userService.update(user);
 
     if (!updated) {
-      return showError('Terjadi kesalahan, gagal mengubah kata sandi');
+      return showError('Terjadi kesalahan, gagal mengubah profil');
     }
 
-    await preferences.clear();
+    await preferences.setString('name', user.name);
+    await preferences.setString('email', user.email);
 
     if (mounted) {
       Navigator.of(context, rootNavigator: true).pop();
 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const Login()),
+        MaterialPageRoute(builder: (context) => const Home()),
         (Route<dynamic> route) => false,
       );
     }
@@ -113,7 +113,7 @@ class PasswordState extends State<Password> {
     ToastContext().init(context);
 
     return MaterialApp(
-      title: 'Ubah Kata Sandi',
+      title: 'Ubah Profil',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.white,
@@ -128,7 +128,7 @@ class PasswordState extends State<Password> {
           backgroundColor: Color(AppColor.primaryColor),
           elevation: 0,
           title: Text(
-            'Ubah Kata Sandi',
+            'Ubah Profil',
             style: TextStyle(fontSize: FontSize.h1, color: Colors.white),
           ),
           leading: IconButton(
@@ -153,65 +153,88 @@ class PasswordState extends State<Password> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const SizedBox(height: 15),
-                  ...['old', 'new', 're'].expand(
-                    (type) => <Widget>[
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Padding(
-                          padding: PaddingSize.label,
-                          child: Text(
-                            passwordLabel[type]!,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontSize: FontSize.h3,
-                              color: Colors.black,
-                            ),
-                          ),
+                  Container(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: PaddingSize.label,
+                      child: Text(
+                        'Nama Lengkap',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: FontSize.h3,
+                          color: Colors.black,
                         ),
                       ),
-                      Padding(
-                        padding: PaddingSize.textForm,
-                        child: TextFormField(
-                          style: TextStyle(fontSize: FontSize.h3),
-                          obscureText: secureText[type]!,
-                          onSaved: (value) {
-                            setState(() {
-                              password[type] = value!;
-                              password = password;
-                            });
-                          },
-                          decoration: InputDecoration(
-                            filled: true,
-                            hintText: passwordLabel[type],
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 15,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(7),
-                              borderSide: BorderSide.none,
-                            ),
-                            labelStyle: TextStyle(
-                              fontSize: FontSize.h3,
-                              color: Colors.black,
-                            ),
-                            hintStyle: TextStyle(
-                              fontSize: FontSize.h3,
-                              color: Colors.grey,
-                            ),
-                            suffixIcon: IconButton(
-                              color:
-                                  Color(AppColor.primaryColor).withOpacity(0.9),
-                              onPressed: () {
-                                showHide(type);
-                              },
-                              icon: Icon(secureText[type]!
-                                  ? Icons.visibility_off
-                                  : Icons.visibility),
-                            ),
-                          ),
+                    ),
+                  ),
+                  Padding(
+                    padding: PaddingSize.textForm,
+                    child: TextFormField(
+                      style: TextStyle(fontSize: FontSize.h3),
+                      onSaved: (value) => name = value!,
+                      controller: TextEditingController(text: name),
+                      decoration: InputDecoration(
+                        filled: true,
+                        hintText: 'Nama Lengkap',
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(7),
+                          borderSide: BorderSide.none,
+                        ),
+                        labelStyle: TextStyle(
+                          fontSize: FontSize.h3,
+                          color: Colors.black,
+                        ),
+                        hintStyle: TextStyle(
+                          fontSize: FontSize.h3,
+                          color: Colors.grey,
                         ),
                       ),
-                    ],
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: PaddingSize.label,
+                      child: Text(
+                        'Alamat Surel',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: FontSize.h3,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: PaddingSize.textForm,
+                    child: TextFormField(
+                      style: TextStyle(fontSize: FontSize.h3),
+                      onSaved: (value) => email = value!,
+                      keyboardType: TextInputType.emailAddress,
+                      controller: TextEditingController(text: email),
+                      decoration: InputDecoration(
+                        filled: true,
+                        hintText: 'Alamat Surel',
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(7),
+                          borderSide: BorderSide.none,
+                        ),
+                        labelStyle: TextStyle(
+                          fontSize: FontSize.h3,
+                          color: Colors.black,
+                        ),
+                        hintStyle: TextStyle(
+                          fontSize: FontSize.h3,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

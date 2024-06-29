@@ -20,7 +20,7 @@ class User {
     return {
       'id': id,
       'username': username,
-      'password': md5.convert(utf8.encode(password)).toString(),
+      'password': password,
       'name': name,
       'email': email,
     };

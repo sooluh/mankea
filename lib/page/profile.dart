@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mankea/db/model/book.dart';
+import 'package:mankea/page/account/identity.dart';
 import 'package:mankea/page/account/password.dart';
 import 'package:mankea/page/login.dart';
 import 'package:mankea/utils/config.dart';
@@ -29,7 +30,7 @@ class ProfileState extends State<Profile> {
       'subtitle': 'Perbarui detail profil',
       'icon': Icons.person,
       'color': Colors.blueAccent,
-      'target': Password(),
+      'target': Identity(),
     },
     {
       'title': 'Ubah Kata Sandi',

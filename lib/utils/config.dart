@@ -21,7 +21,7 @@ class FontSize {
 }
 
 class PaddingSize {
-  static var logo = const EdgeInsets.only(top: 20, left: 10, right: 10);
+  static var title = const EdgeInsets.only(top: 5, left: 10, right: 10);
   static var textForm = const EdgeInsets.only(left: 15, right: 15, bottom: 15);
   static var label = const EdgeInsets.only(bottom: 2, left: 15, right: 15);
 }

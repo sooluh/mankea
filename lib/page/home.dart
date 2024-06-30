@@ -174,7 +174,7 @@ class HomeState extends State<Home> {
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 2.5,
+                                      vertical: 1,
                                       horizontal: 10,
                                     ),
                                     child: Shimmer.fromColors(
@@ -195,7 +195,7 @@ class HomeState extends State<Home> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 2.5,
+                                      vertical: 1,
                                       horizontal: 10,
                                     ),
                                     child: Shimmer.fromColors(
@@ -218,7 +218,7 @@ class HomeState extends State<Home> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 2.5,
+                                      vertical: 1,
                                       horizontal: 10,
                                     ),
                                     child: Shimmer.fromColors(
@@ -392,7 +392,7 @@ class HomeState extends State<Home> {
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 2.5,
+                                      vertical: 1,
                                       horizontal: 10,
                                     ),
                                     child: Text(
@@ -404,7 +404,7 @@ class HomeState extends State<Home> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 2.5,
+                                      vertical: 1,
                                       horizontal: 10,
                                     ),
                                     child: Text(
@@ -417,7 +417,7 @@ class HomeState extends State<Home> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 2.5,
+                                      vertical: 1,
                                       horizontal: 10,
                                     ),
                                     child: Row(

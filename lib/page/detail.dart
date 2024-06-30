@@ -152,8 +152,8 @@ class DetailState extends State<Detail> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(5),
                         child: FadeInImage(
-                          width: 60 * 3,
-                          height: 90 * 3,
+                          width: 60 * 3.2,
+                          height: 90 * 3.2,
                           image: NetworkImage(book.cover),
                           placeholder:
                               const AssetImage('assets/images/placeholder.png'),
@@ -282,7 +282,7 @@ class DetailState extends State<Detail> {
                                     children: <Widget>[
                                       Icon(
                                         Icons.check_circle_outline,
-                                        size: 12,
+                                        size: 16,
                                         color: Color(AppColor.primaryColor),
                                       ),
                                       const SizedBox(width: 10),
@@ -300,7 +300,7 @@ class DetailState extends State<Detail> {
                                     children: <Widget>[
                                       Icon(
                                         Icons.check_circle_outline,
-                                        size: 12,
+                                        size: 16,
                                         color: Color(AppColor.primaryColor),
                                       ),
                                       const SizedBox(width: 10),
@@ -317,7 +317,7 @@ class DetailState extends State<Detail> {
                                   children: <Widget>[
                                     Icon(
                                       Icons.check_circle_outline,
-                                      size: 12,
+                                      size: 16,
                                       color: Color(AppColor.primaryColor),
                                     ),
                                     const SizedBox(width: 10),

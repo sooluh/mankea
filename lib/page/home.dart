@@ -154,8 +154,8 @@ class HomeState extends State<Home> {
                               baseColor: Color(AppColor.shimmerColor),
                               highlightColor: Colors.white,
                               child: Container(
-                                width: 60,
-                                height: 90,
+                                width: 60 * 1.2,
+                                height: 90 * 1.2,
                                 decoration: ShapeDecoration(
                                   color: Colors.grey[400],
                                   shape: const RoundedRectangleBorder(
@@ -174,7 +174,7 @@ class HomeState extends State<Home> {
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 1,
+                                      vertical: 2.5,
                                       horizontal: 10,
                                     ),
                                     child: Shimmer.fromColors(
@@ -195,7 +195,7 @@ class HomeState extends State<Home> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 1,
+                                      vertical: 2.5,
                                       horizontal: 10,
                                     ),
                                     child: Shimmer.fromColors(
@@ -218,7 +218,7 @@ class HomeState extends State<Home> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 1,
+                                      vertical: 2.5,
                                       horizontal: 10,
                                     ),
                                     child: Shimmer.fromColors(
@@ -377,8 +377,8 @@ class HomeState extends State<Home> {
                                 bottomLeft: Radius.circular(7.5),
                               ),
                               child: FadeInImage(
-                                width: 60,
-                                height: 90,
+                                width: 60 * 1.2,
+                                height: 90 * 1.2,
                                 image: NetworkImage(books![index].cover),
                                 placeholder: const AssetImage(
                                     'assets/images/placeholder.png'),
@@ -398,7 +398,7 @@ class HomeState extends State<Home> {
                                     child: Text(
                                       books![index].title,
                                       maxLines: 1,
-                                      style: TextStyle(fontSize: FontSize.h3),
+                                      style: TextStyle(fontSize: FontSize.h2),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
@@ -411,7 +411,7 @@ class HomeState extends State<Home> {
                                       books![index].author,
                                       style: TextStyle(
                                         color: Colors.grey,
-                                        fontSize: FontSize.h5,
+                                        fontSize: FontSize.h4,
                                       ),
                                     ),
                                   ),
@@ -438,7 +438,7 @@ class HomeState extends State<Home> {
                                               : 'n/a',
                                           style: TextStyle(
                                             color: Colors.grey,
-                                            fontSize: FontSize.h5,
+                                            fontSize: FontSize.h4,
                                           ),
                                         ),
                                       ],

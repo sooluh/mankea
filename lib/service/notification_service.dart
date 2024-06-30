@@ -38,8 +38,8 @@ class NotificationService {
   }
 
   final androidNotificationDetails = const AndroidNotificationDetails(
-    'channel id',
-    'channel name',
+    'mankea',
+    'Book Notifications',
     playSound: true,
     priority: Priority.high,
     importance: Importance.max,

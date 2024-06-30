@@ -7,10 +7,18 @@ import 'package:mankea/service/notification_service.dart';
 import 'package:mankea/service/user_service.dart';
 import 'package:mankea/model/user.dart';
 import 'package:mankea/splash.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Permission.notification.isDenied.then((value) {
+    if (value) {
+      Permission.notification.request();
+    }
+  });
   NotificationService().init();
+
   runApp(const Main());
 }
 

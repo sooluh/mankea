@@ -7,6 +7,8 @@ import 'package:mankea/service/notification_service.dart';
 import 'package:mankea/utils/config.dart';
 import 'package:mankea/widget/invisible_expanded_header.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart' as in_app;
+import 'package:url_launcher/url_launcher.dart' as external_browser;
 
 class Detail extends StatefulWidget {
   final Book? book;
@@ -49,6 +51,29 @@ class DetailState extends State<Detail> {
     setState(() {
       book = Book.fromJson(data);
     });
+  }
+
+  Future<void> goto(String url) async {
+    try {
+      in_app.launch(
+        url,
+        customTabsOption: in_app.CustomTabsOption(
+          toolbarColor: Color(AppColor.primaryColor),
+          showPageTitle: true,
+          enableInstantApps: true,
+        ),
+      );
+    } catch (e) {
+      final Uri parsed = Uri.parse(url);
+      final launched = await external_browser.launchUrl(
+        parsed,
+        mode: external_browser.LaunchMode.externalApplication,
+      );
+
+      if (!launched) {
+        throw 'Could not open $parsed';
+      }
+    }
   }
 
   List<Widget> skeletonDescription() {
@@ -127,8 +152,8 @@ class DetailState extends State<Detail> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(5),
                         child: FadeInImage(
-                          width: 60 * 2.5,
-                          height: 90 * 2.5,
+                          width: 60 * 3,
+                          height: 90 * 3,
                           image: NetworkImage(book.cover),
                           placeholder:
                               const AssetImage('assets/images/placeholder.png'),
@@ -159,8 +184,12 @@ class DetailState extends State<Detail> {
                   focusColor: Colors.transparent,
                   hoverColor: Colors.transparent,
                   splashColor: Colors.transparent,
-                  onPressed: () {
-                    notification.showNotification(book.title, book.author, {});
+                  onPressed: () async {
+                    await notification.showNotification(
+                      book.title,
+                      book.author,
+                      {},
+                    );
                   },
                 ),
               ],
@@ -327,6 +356,43 @@ class DetailState extends State<Detail> {
                           ),
                         ),
                       ),
+                      if (book.url?.firstOrNull != null)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 15,
+                            right: 15,
+                            bottom: 10,
+                          ),
+                          child: InkWell(
+                            onTap: () async {
+                              await goto(book.url?.first);
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(AppColor.primaryColor),
+                                    Color(AppColor.primaryColor),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Selengkapnya',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: FontSize.h2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ]),

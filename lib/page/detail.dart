@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mankea/db/model/book.dart';
+import 'package:mankea/model/book.dart';
+import 'package:mankea/service/notification_service.dart';
 import 'package:mankea/utils/config.dart';
-import 'package:mankea/utils/widget/invisible_expanded_header.dart';
+import 'package:mankea/widget/invisible_expanded_header.dart';
 import 'package:shimmer/shimmer.dart';
 
 class Detail extends StatefulWidget {
@@ -17,6 +18,7 @@ class Detail extends StatefulWidget {
 }
 
 class DetailState extends State<Detail> {
+  NotificationService notification = NotificationService();
   late Book book = widget.book!;
 
   @override
@@ -158,7 +160,7 @@ class DetailState extends State<Detail> {
                   hoverColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   onPressed: () {
-                    // TODO: notif
+                    notification.showNotification(book.title, book.author, {});
                   },
                 ),
               ],

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mankea/db/model/book.dart';
+import 'package:mankea/model/book.dart';
 import 'package:mankea/page/detail.dart';
 import 'package:mankea/page/profile.dart';
 import 'package:mankea/utils/config.dart';

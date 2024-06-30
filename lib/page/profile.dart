@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mankea/db/model/book.dart';
+import 'package:mankea/model/book.dart';
 import 'package:mankea/page/account/identity.dart';
 import 'package:mankea/page/account/password.dart';
 import 'package:mankea/page/login.dart';

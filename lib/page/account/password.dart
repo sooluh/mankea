@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mankea/db/service/user_service.dart';
+import 'package:mankea/service/user_service.dart';
 import 'package:mankea/page/login.dart';
 import 'package:mankea/utils/config.dart';
 import 'package:mankea/utils/helper.dart';

@@ -1,4 +1,4 @@
-import 'package:mankea/db/model/user.dart';
+import 'package:mankea/model/user.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 

@@ -3,12 +3,14 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:mankea/db/service/user_service.dart';
-import 'package:mankea/db/model/user.dart';
+import 'package:mankea/service/notification_service.dart';
+import 'package:mankea/service/user_service.dart';
+import 'package:mankea/model/user.dart';
 import 'package:mankea/splash.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  NotificationService().init();
   runApp(const Main());
 }
 

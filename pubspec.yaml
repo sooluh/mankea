@@ -23,11 +23,18 @@ dependencies:
   flutter_custom_tabs: ^1.0.4
   url_launcher: ^6.3.0
   permission_handler: ^11.3.1
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+
+flutter_launcher_icons:
+  image_path: "assets/images/logo.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
 
 flutter:
   uses-material-design: true
